@@ -1,61 +1,133 @@
 <template>
   <div class="container">
-    <div class="main">
-      <h5>
-        <nuxt-link to="/post">旅游攻略</nuxt-link>
-        <span>/ 攻略详情</span>
-      </h5>
-      <h1>{{artical.title}}</h1>
-      <hr />
-      <div class="gongl">
-        攻略：
-        <span>{{artical.updated_at}}</span>
-        阅读：
-        <span>{{artical.watch}}</span>
-      </div>
-      <div class="contenta" v-html="artical.content"></div>
-      <!-- 用户操作，点赞，收藏等等 -->
-      <div class="operation">
-        <el-row type="flex" justify="center">
-          <div class="icon-item">
-            <i class="iconfont iconpinglun"></i>
-            <p>评论（100）</p>
-          </div>
-          <div class="icon-item" @click="handleshoucang">
-            <i class="iconfont iconstar1"></i>
-            <p>收藏</p>
-          </div>
-          <div class="icon-item">
-            <i class="iconfont iconfenxiang"></i>
-            <p>分享</p>
-          </div>
-          <div class="icon-item" @click="handledianzan">
-            <i class="iconfont iconding"></i>
-            <p>点赞（{{num}}）</p>
-          </div>
-        </el-row>
-      </div>
+    <el-row type="flex" justify="space-between">
+      <div class="main">
+        <h5>
+          <nuxt-link to="/post">旅游攻略</nuxt-link>
+          <span>/ 攻略详情</span>
+        </h5>
+        <h1>{{artical.title}}</h1>
+        <hr />
+        <div class="gongl">
+          攻略：
+          <span>{{artical.updated_at}}</span>
+          阅读：
+          <span>{{artical.watch}}</span>
+        </div>
+        <div class="contenta" v-html="artical.content"></div>
+        <!-- 用户操作，点赞，收藏等等 -->
+        <div class="operation">
+          <el-row type="flex" justify="center">
+            <div class="icon-item">
+              <i class="iconfont iconpinglun"></i>
+              <p>评论（100）</p>
+            </div>
+            <div class="icon-item" @click="handleshoucang">
+              <i class="iconfont iconstar1"></i>
+              <p>收藏</p>
+            </div>
+            <div class="icon-item">
+              <i class="iconfont iconfenxiang"></i>
+              <p>分享</p>
+            </div>
+            <div class="icon-item" @click="handledianzan">
+              <i class="iconfont iconding"></i>
+              <p>点赞（{{num}}）</p>
+            </div>
+          </el-row>
+        </div>
 
-      <!-- 用户评论 -->
-      <div class="comment">
+        <!-- 用户评论 -->
+        <div class="comment">
           <p>评论</p>
-      </div>
-    </div>
+          <el-input type="textarea" :rows="2" placeholder="说点什么吧..." v-model="input"></el-input>
+          <div class="button"></div>
+          <div class="upload">
+            <el-row type="flex" justify="space-between">
+              <div class="upload-box">
+                <el-upload
+                  action="https://jsonplaceholder.typicode.com/posts/"
+                  list-type="picture-card"
+                  :on-preview="handlePictureCardPreview"
+                  :on-remove="handleRemove"
+                >
+                  <i class="el-icon-plus"></i>
+                </el-upload>
+                <el-dialog :visible.sync="dialogVisible" size="tiny">
+                  <img width="100%" :src="dialogImageUrl" alt />
+                </el-dialog>
+              </div>
 
-    <div class="aside"></div>
+              <el-button type="success" size="mini" plain>提交</el-button>
+            </el-row>
+          </div>
+
+          <div class="comment-show">
+            <Comment v-for="(item,index) in dataList" :key="index" :data="item" />
+          </div>
+
+          <el-pagination
+            @size-change="handleSizeChange"
+            @current-change="handleCurrentChange"
+            :current-page="pageIndex"
+            :page-sizes="[5, 10, 15, 20]"
+            :page-size="pageSize"
+            layout="total, sizes, prev, pager, next, jumper"
+            :total="total"
+          ></el-pagination>
+        </div>
+      </div>
+
+      <div class="aside">
+        <PostAside />
+      </div>
+    </el-row>
   </div>
 </template>
  
 <script>
+import Comment from "@/components/post/comment";
+import PostAside from "@/components/post/postAside";
 export default {
-  filters: {},
+  components: {
+    Comment,
+    PostAside
+  },
   data() {
     return {
       artical: {},
-      num: 20
+      num: 20,
+      input: "",
+      dialogImageUrl: "",
+      dialogVisible: false,
+      pageIndex: 1,
+      pageSize: 5,
+      total: 0,
+      commentsList: []
     };
   },
+  computed: {
+    // 当前页面渲染的列表数据
+    dataList(){
+      return this.commentsList.slice(
+        (this.pageIndex - 1) * this.pageSize,
+        this.pageSize * this.pageIndex
+      )
+    }
+  },
   methods: {
+    // 获取所有评论数据
+    getData() {
+      this.$axios({
+        url: "/posts/comments",
+        params: { post: 4, _limit: 7, _start: 0 }
+      }).then(res => {
+        console.log(res);
+        this.commentsList = res.data.data;
+        // console.log(this.commentsList);
+        this.total = res.data.data.length;
+      });
+    },
     //   点击收藏
     handleshoucang() {
       this.$message.warning("用户已经收藏");
@@ -64,9 +136,27 @@ export default {
     handledianzan() {
       this.num++;
       this.$message.success("用户已经点赞");
+    },
+    handleRemove(file, fileList) {
+      console.log(file, fileList);
+    },
+    handlePictureCardPreview(file) {
+      console.log(file);
+      console.log(file.response);
+      this.dialogImageUrl = file.url;
+      this.dialogVisible = true;
+    },
+    // 切换条数时触发
+    handleSizeChange(value) {
+      this.pageSize = value
+    },
+    // 切换页数时触发
+    handleCurrentChange(value) {
+      this.pageIndex = value
     }
   },
   mounted() {
+    this.getData();
     const id = 4;
     this.$axios({
       url: `/posts?id=${id}`,
@@ -118,7 +208,7 @@ export default {
       }
     }
     .operation {
-        margin-bottom: 10px;
+      margin-bottom: 10px;
       .icon-item {
         margin-right: 30px;
         text-align: center;
@@ -136,11 +226,28 @@ export default {
         }
       }
     }
-    .comment{
-        margin: 80px 0px;
+    .comment {
+      margin: 80px 0px;
+
+      /deep/ .el-textarea__inner {
+        resize: none;
+        margin: 16px 0px;
+      }
+    }
+    .upload {
+      .el-button {
+        height: 30px;
+      }
+    }
+    .comment-show {
+      border: 1px solid #ccc;
+      margin: 30px 0px;
     }
   }
+
   .aside {
+    width: 280px;
+    margin: 20px;
   }
 }
 </style>
