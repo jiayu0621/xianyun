@@ -5,7 +5,7 @@
         <!-- {{data.account.defaultAvatar}} -->
         <img :src="$axios.defaults.baseURL+data.account.defaultAvatar" alt />
         <span>{{data.account.nickname}}</span>
-        {{data.created_at}}
+        {{data.created_at | formatDate}}
       </div>
       <div class="comment-content">{{data.content}}</div>
     </div>
@@ -14,7 +14,15 @@
 </template>
  
 <script>
+import { formatDate } from "@/components/commonUtil.js";
+
 export default {
+   filters: {
+    formatDate(time) {
+      var date = new Date(time);
+      return formatDate(date, "yyyy-MM-dd h:m:s");
+    }
+  },
   props: {
     data: {
       type: Object,

@@ -10,7 +10,7 @@
         <hr />
         <div class="gongl">
           攻略：
-          <span>{{artical.updated_at}}</span>
+          <span>{{artical.created_at | formatDate}}</span>
           阅读：
           <span>{{artical.watch}}</span>
         </div>
@@ -46,10 +46,11 @@
             <el-row type="flex" justify="space-between">
               <div class="upload-box">
                 <el-upload
-                  action="https://jsonplaceholder.typicode.com/posts/"
+                  action="http:127.0.0.1:1337/upload"
                   list-type="picture-card"
                   :on-preview="handlePictureCardPreview"
                   :on-remove="handleRemove"
+                  :http-request="upLoad"
                 >
                   <i class="el-icon-plus"></i>
                 </el-upload>
@@ -58,7 +59,7 @@
                 </el-dialog>
               </div>
 
-              <el-button type="success" size="mini" plain>提交</el-button>
+              <el-button type="success" size="mini" plain @click="handleAddcomment">提交</el-button>
             </el-row>
           </div>
 
@@ -88,7 +89,15 @@
 <script>
 import Comment from "@/components/post/comment";
 import PostAside from "@/components/post/postAside";
+import { formatDate } from "@/components/commonUtil.js";
+
 export default {
+   filters: {
+    formatDate(time) {
+      var date = new Date(time);
+      return formatDate(date, "yyyy-MM-dd h:m:s");
+    }
+  },
   components: {
     Comment,
     PostAside
@@ -108,11 +117,11 @@ export default {
   },
   computed: {
     // 当前页面渲染的列表数据
-    dataList(){
+    dataList() {
       return this.commentsList.slice(
         (this.pageIndex - 1) * this.pageSize,
         this.pageSize * this.pageIndex
-      )
+      );
     }
   },
   methods: {
@@ -120,12 +129,27 @@ export default {
     getData() {
       this.$axios({
         url: "/posts/comments",
-        params: { post: 4, _limit: 7, _start: 0 }
+        params: { post: 4, _start: 0 }
       }).then(res => {
         console.log(res);
         this.commentsList = res.data.data;
         // console.log(this.commentsList);
         this.total = res.data.data.length;
+      });
+    },
+    // 点击提交按钮添加评论
+    handleAddcomment() {
+      this.$axios({
+        url: "/comments",
+        method: "POST",
+        data: { content: this.input, pics: [], post: 4 },
+        headers: {
+          Authorization: `Bearer ${this.$store.state.user.userInfo.token}`
+        }
+      }).then(res => {
+        console.log(res);
+        this.getData();
+        this.input = "";
       });
     },
     //   点击收藏
@@ -140,19 +164,34 @@ export default {
     handleRemove(file, fileList) {
       console.log(file, fileList);
     },
+    // 点击已上传的文件链接时的钩子, 可以通过 file.response 拿到服务端返回数据
     handlePictureCardPreview(file) {
       console.log(file);
       console.log(file.response);
       this.dialogImageUrl = file.url;
       this.dialogVisible = true;
     },
+    upLoad (file) {
+      console.log(file);
+      // var nikename = sessionStorage.getItem('nikename')
+      const formData = new FormData()
+      formData.append('file',file.file)
+      // formData.append('nikeName',nikename)
+      this.$axios.post(`/upload`,formData).then(res => res.data)
+      .then(data => {
+        console.log(data)
+        if(data.code === 200){
+          this.dialogImageUrl = data.data[0]
+        }
+      })
+    },
     // 切换条数时触发
     handleSizeChange(value) {
-      this.pageSize = value
+      this.pageSize = value;
     },
     // 切换页数时触发
     handleCurrentChange(value) {
-      this.pageIndex = value
+      this.pageIndex = value;
     }
   },
   mounted() {
@@ -200,11 +239,8 @@ export default {
     }
     .contenta {
       margin-bottom: 30px;
-      /deep/ p:nth-child(2) img {
-        width: 100%;
-      }
-      /deep/ p:nth-child(9) img {
-        width: 100%;
+      /deep/ img {
+        max-width: 706px;
       }
     }
     .operation {

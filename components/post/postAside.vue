@@ -1,38 +1,54 @@
 <template>
   <div>
     <h3>相关攻略</h3>
-    <div class="about-gl">
-      <el-row type="flex" justify="start">
-        <div class="about-gl-img">
-          <div class="tp"></div>
+    <div class="about-gl" >
+      <el-row type="flex" justify="start" v-for="(item,index) in recomment" :key="index" class="aa">
+        <nuxt-link :to="`/post/detail?id=${item.id}`">
+          <div class="about-gl-img">
+          <div class="tp">
+            <img :src="item.images[0]" alt />
+          </div>
         </div>
         <div class="about-glc">
-          <p>111</p>
-          <span>666</span>
+          <p>{{item.title}}</p>
+          <span>{{item.created_at | formatDate}}</span>
+          <p>阅读：{{item.watch}}</p>
         </div>
+        </nuxt-link>
       </el-row>
     </div>
   </div>
 </template>
  
 <script>
+import { formatDate } from "@/components/commonUtil.js";
 export default {
+  filters: {
+    formatDate(time) {
+      var date = new Date(time);
+      return formatDate(date, "yyyy-MM-dd h:m:s");
+    }
+  },
   data() {
     return {
-      recomment: {}
+      recomment: {},
+      id: "",
+      dataList: []
     };
   },
   mounted() {
-    // this.$axios({
-    //     url:'/posts/recommend',
-    //     method:"GET",
-    //     params:{
-    //         id:4,
-    //     },
-    // }).then(res=>{
-    //     console.log(res);
-    //     this.recomment = res.data.data
-    // })
+    this.$axios({
+      url: "/posts/recommend",
+      method: "GET",
+      params: {
+        id: 4
+      }
+    }).then(res => {
+      console.log(res);
+      this.recomment = res.data.data;
+      this.dataList = this.recomment;
+      
+    });
   }
 };
 </script>
@@ -45,8 +61,14 @@ h3 {
   padding: 13px 0px;
 }
 .about-gl {
-  margin: 20px 0px;
+  // margin: 20px 0px;
+  cursor: pointer;
+  .aa {
+    border-bottom: 1px solid #dddddd;
+    padding: 20px 0px;
+  }
   .about-gl-img {
+    margin-right: 3px;
     .tp {
       width: 100px;
       height: 80px;
@@ -56,6 +78,14 @@ h3 {
         width: 100px;
         height: 80px;
       }
+    }
+  }
+  .about-glc {
+    font-size: 13px;
+    color: #999999;
+    p {
+      color: #000;
+      // margin-bottom: 20px;
     }
   }
 }
