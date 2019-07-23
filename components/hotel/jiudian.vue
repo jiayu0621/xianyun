@@ -6,11 +6,7 @@
           <img style="width:100%;height:100%" :src="data.data[index].photos" alt />
         </el-col>
         <el-col :span="9" class="bingguanxinxi">
-          <a
-            href="#"
-            class="jiudianname"
-            @click="jiudianxiangqing(data.data[index].id) "
-          >{{data.data[index].name}}</a>
+          <div class="jiudianname" @click="jiudianxiangqing(item.id) ">{{data.data[index].name}}</div>
           <el-row class="jiudianleixing">
             <span>{{data.data[index].alias}}</span>
             <span>💗💗💗</span>
@@ -35,13 +31,7 @@
         </el-col>
       </el-row>
     </el-row>
-    <el-pagination
-    class="fenye"
-  small
-  layout="prev, pager, next"
-  :total='this.data.total*1'>
-</el-pagination>
-
+    <el-pagination class="fenye" small layout="prev, pager, next" :total="this.data.total*1"></el-pagination>
   </div>
 </template>
 
@@ -55,14 +45,13 @@ export default {
   },
   data() {
     return {
-      value: 3.7,
-      
+      value: 3.7
     };
   },
   methods: {
     jiudianxiangqing(id) {
-      // console.log(12);
-      this.$router.push("/hotel/"+id+'.html');
+      console.log(id);
+      this.$router.push(`/hotel/hotelDetail?id=${id}`);
     }
   }
 };
@@ -120,8 +109,5 @@ a {
   color: orange;
   font-size: 18px;
   padding-left: 50px;
-}
-.fenye{
-
 }
 </style>

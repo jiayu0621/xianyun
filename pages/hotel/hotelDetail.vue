@@ -111,12 +111,14 @@ export default {
   },
   mounted() {
     const {id} = this.$route.query
+    console.log(id);
+    
     this.$axios({
-      url: "/hotels?id=2",
-      method: "get"
-      // params:{
-      //     id:1
-      // }
+      url: "/hotels",
+      method: "get",
+      params:{
+          id:id
+      }
     }).then(res => {
       console.log(res);
       const { data } = res.data;
