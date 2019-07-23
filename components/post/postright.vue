@@ -14,7 +14,8 @@
       <h4>推荐攻略</h4>
       <div>
         <el-button type="primary" round size="mini">
-          <i class="el-icon-edit"></i>&nbsp;写游记
+          <i class="el-icon-edit"></i>&nbsp;
+          <nuxt-link to="/post/create">写游记</nuxt-link>
         </el-button>
       </div>
     </el-row>

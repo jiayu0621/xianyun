@@ -128,9 +128,10 @@ export default {
   methods: {
     // 获取所有评论数据
     getData() {
+      const {id} = this.$route.query
       this.$axios({
         url: "/posts/comments",
-        params: { post: 4, _start: 0 }
+        params: { post: id, _start: 0 }
       }).then(res => {
         console.log(res);
         this.commentsList = res.data.data;
@@ -140,10 +141,11 @@ export default {
     },
     // 点击提交按钮添加评论
     handleAddcomment() {
+      const {id} = this.$route.query
       this.$axios({
         url: "/comments",
         method: "POST",
-        data: { content: this.input, pics: this.files, post: 4 },
+        data: { content: this.input, pics: this.files, post: id },
         headers: {
           Authorization: `Bearer ${this.$store.state.user.userInfo.token}`
         }
@@ -184,7 +186,7 @@ export default {
   },
   mounted() {
     this.getData();
-    const id = 4;
+    const {id} = this.$route.query;
     this.$axios({
       url: `/posts?id=${id}`,
       method: "GET"

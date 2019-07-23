@@ -26,7 +26,9 @@
           <span>保存到草稿</span>
         </div>
       </div>
-      <div class="aside"></div>
+      <div class="aside">
+        <h2>草稿箱（<span>{{num}}</span>）</h2>
+      </div>
     </el-row>
   </div>
 </template>
@@ -43,6 +45,7 @@ export default {
   name: "app",
   data() {
     return {
+      num:1,
       city: "",
       input: "",
       config: {
@@ -174,6 +177,12 @@ export default {
     width: 200px;
     height: 100px;
     border: 1px solid #dddddd;
+    padding: 10px;
+    h2{
+      color: #666666;
+      font-size: 16px;
+      font-weight: normal;
+    }
   }
 }
 </style>

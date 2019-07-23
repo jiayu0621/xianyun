@@ -3,10 +3,10 @@
     <div v-for="(item,index) in postList" :key="index"  @click="goDetails(item.id)">
       <el-row class="news_content border_bottom" v-if="item.images.length>1">
         <h4 class="h4">
-          <a href>{{item.title}}</a>
+          {{item.title}}
         </h4>
         <p>
-          <a href>{{item.summary}}</a>
+          {{item.summary}}
         </p>
         <el-row type="flex" class="news_three_imgs" justify="space-between">
           <div v-for="(v,i) in item.images" :key="i">
