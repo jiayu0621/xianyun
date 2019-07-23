@@ -97,7 +97,9 @@
             </el-tooltip>
           </el-col>
         </el-row>
-        <el-row class="hotelditu"></el-row>
+        <el-row class="hotelditu">
+          <Jiudianditu :data='jiudian'/>
+        </el-row>
       </el-row>
       <el-row type="flex" class="guolv">
         <el-col :span="6">
@@ -107,14 +109,14 @@
             <el-slider v-model="value" :max="zuidazhi" style="margin:0 20px"></el-slider>
           </div>
         </el-col>
-        <el-col :span="5" class="dengji" >
+        <el-col :span="5" class="dengji">
           <p>住宿等级</p>
-          <el-dropdown class="dengji-xiala" >
-            <span class="el-dropdown-link"  >
+          <el-dropdown class="dengji-xiala">
+            <span class="el-dropdown-link">
               {{radio}}
               <i class="el-icon-arrow-down el-icon--right" style="margin-left:120px"></i>
             </span>
-            <el-dropdown-menu slot="dropdown" >
+            <el-dropdown-menu slot="dropdown">
               <el-dropdown-item style="width:130px">
                 <el-radio v-model="radio" label="1星">1星</el-radio>
               </el-dropdown-item>
@@ -219,13 +221,14 @@
         </el-col>
       </el-row>
     </el-row>
-    <Jiudian :data='this.jiudian'/>
+    <Jiudian :data="this.jiudian" />
   </div>
 </template>
 
 <script>
 import moment from "moment";
 import Jiudian from "@/components/hotel/jiudian";
+import Jiudianditu from "@/components/hotel/jiudianditu";
 export default {
   data() {
     return {
@@ -237,7 +240,7 @@ export default {
       radio3: "不限",
       radio4: "不限",
       zuidazhi: 4000,
-      jiudianmingzi:'',
+      jiudianmingzi: "",
       form: {
         name: "南京市",
         cityname: "",
@@ -248,24 +251,25 @@ export default {
         leftTime: ""
       },
       jingqu: [],
-      jiudian:{
-        jiudianxinxi:[],
-        total:""
+      jiudian: {
+        jiudianxinxi: [],
+        total: ""
       }
     };
   },
   components: {
-    Jiudian
+    Jiudian,
+    Jiudianditu
   },
   mounted() {
     this.$axios({
-        url: "/hotels",
-        // params: { city: this.form.id }
-      }).then(res=>{
-        console.log(res);
-        const {data} = res
-        this.jiudian=data
-      })
+      url: "/hotels"
+      // params: { city: this.form.id }
+    }).then(res => {
+      console.log(res);
+      const { data } = res;
+      this.jiudian = data;
+    });
     this.jingquxuanran();
   },
   methods: {
@@ -313,9 +317,8 @@ export default {
         params: { city: this.form.id }
       }).then(res => {
         console.log(res);
-        const {data} = res.data
+        const { data } = res.data;
         this.$router.push(`?city=${this.form.id}`);
-       
       });
     },
     // 查看价格
@@ -336,7 +339,7 @@ export default {
       }, []);
 
       const paramsStr = paramsArr.join("&");
-      this.$router.push(paramsStr ? ('?' + paramsStr) : '');
+      this.$router.push(paramsStr ? "?" + paramsStr : "");
     },
     // 选择时间时触发
     shijiancufa(value) {
@@ -364,7 +367,7 @@ export default {
 }
 .hotelditu {
   height: 260px;
-  background-color: red;
+  // background-color: red;
   width: 400px;
   float: right;
 }

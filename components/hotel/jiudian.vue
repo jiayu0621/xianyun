@@ -9,7 +9,7 @@
           <a
             href="#"
             class="jiudianname"
-            @click="jiudianxiangqing(index) "
+            @click="jiudianxiangqing(data.data[index].id) "
           >{{data.data[index].name}}</a>
           <el-row class="jiudianleixing">
             <span>{{data.data[index].alias}}</span>
@@ -60,9 +60,9 @@ export default {
     };
   },
   methods: {
-    jiudianxiangqing(index) {
+    jiudianxiangqing(id) {
       // console.log(12);
-      this.$router.push("/hotel/" + (index + 1) + ".html");
+      this.$router.push("/hotel/"+id+'.html');
     }
   }
 };
