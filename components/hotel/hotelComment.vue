@@ -9,7 +9,7 @@
             alt
           />
           <span>LV.{{item.level}}</span>
-          <p>时间</p>
+          <p>2017.05.30</p>
         </div>
       </el-col>
 
@@ -23,7 +23,12 @@
           v-model="comment[item.id]"
           @blur="handleChangeHeigh(index)"
         ></textarea>
-        <el-button v-if="currentIndex==index" type="success" size="mini" class="btn_add">添加</el-button>
+        <el-button
+         v-if="currentIndex==index" 
+         type="success" size="mini"
+          class="btn_add"
+          @click="addComment"
+          >添加</el-button>
         <next :data="item.followed" />
       </el-col>
     </el-row>
@@ -52,6 +57,9 @@ export default {
     },
     handleChangeHeigh(index){
       this.currentIndex =null;
+    },
+    addComment(){
+
     }
   },
   mounted() {}
