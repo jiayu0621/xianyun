@@ -102,10 +102,7 @@ export default {
         scores:{},
       },
     
-        // hotelComment:{
-        //   level:0,
-        //   content:'',
-        // },
+        
         hotelComment:[],
     };
   },

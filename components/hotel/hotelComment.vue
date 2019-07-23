@@ -51,7 +51,7 @@ export default {
       this.currentIndex = index;
     },
     handleChangeHeigh(index){
-      this.currentIndex = index;
+      this.currentIndex =null;
     }
   },
   mounted() {}

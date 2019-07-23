@@ -1,12 +1,12 @@
 <template>
   <div class="hotel_map">
-    <el-row class="hotel_map_content">
+    <el-row class="hotel_map_content default_color">
       <el-col :span="15" id="container"></el-col>
       <el-col :span="9" class="container_item">
         <el-tabs :tab-position="tabPosition" class="container_tab">
           <el-tab-pane label="风景" >
-            <ul v-for="(item,index) in data.scenic" :key="index">
-              <li>{{item.name}}</li>
+            <ul  class="container_ul">
+              <li v-for="(item,index) in data.scenic" :key="index">{{item.name}}</li>
             </ul>
           </el-tab-pane>
           <el-tab-pane label="交通">配置管理</el-tab-pane>
@@ -65,6 +65,9 @@ export default {
 </script>
 
 <style lang='less' scoped>
+.default_color {
+  color: #666666;
+}
 .hotel_map {
   margin: 30px 0;
   #container {
@@ -73,10 +76,15 @@ export default {
   .container_item{
     padding-left: 20px;
     .container_tab{
-      height: 300px;
-     overflow: scroll;
-     overflow-x: hidden;
-      
+      padding: 5px;
+      .container_ul{
+        height: 300px;
+      overflow: scroll;
+      overflow-x: hidden;
+        li{
+          padding: 5px 0;
+        }
+      }
     }
   }
 }
