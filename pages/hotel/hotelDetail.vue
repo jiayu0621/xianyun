@@ -72,18 +72,20 @@
         </el-col>
       </el-row>
     </div>
-
+    <HotelGrade :data="hotelDetail"/>
     <!-- 评论跟帖组件 -->
-    <HotelComment :data="hotelDetail" />
+    <HotelComment  :data='hotelComment'/>
   </div>
 </template>
 
 <script>
 import HotelMap from "@/components/hotel/hotelMap";
+import HotelGrade from "@/components/hotel/hotelGrade";
 import HotelComment from "@/components/hotel/hotelComment";
 export default {
   components: {
     HotelMap,
+    HotelGrade,
     HotelComment
   },
   methods: {
@@ -96,21 +98,37 @@ export default {
       bgURL:'1.jpeg',
       hotelDetail: {
         // location:{}
-        scenic: []
-      }
+        scenic: [],
+        scores:{},
+      },
+    
+        // hotelComment:{
+        //   level:0,
+        //   content:'',
+        // },
+        hotelComment:[],
     };
   },
   mounted() {
+    const {id} = this.$route.query
     this.$axios({
-      url: "/hotels?id=1",
+      url: "/hotels?id=2",
       method: "get"
       // params:{
       //     id:1
       // }
     }).then(res => {
-      // console.log(res);
+      console.log(res);
       const { data } = res.data;
       this.hotelDetail = data[0];
+    });
+
+     this.$axios({
+      url: "/hotels/comments",
+      method: "get"
+    }).then(res => {
+      // console.log(res);
+      this.hotelComment=res.data.data
     });
   }
 };
