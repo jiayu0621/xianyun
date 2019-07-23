@@ -2,7 +2,8 @@
   <div>
     <h3>相关攻略</h3>
     <div class="about-gl" v-for="(item,index) in recomment" :key="index">
-      <nuxt-link :to="`/post/detail?id=${item.id}`">
+      <!-- <nuxt-link :to="`/post/detail?id=`+item.id"> -->
+      <div @click="handle(item.id)">
         <el-row type="flex" justify="start"  class="aa">
           <div class="about-gl-img">
           <div class="tp">
@@ -15,7 +16,8 @@
           <p>阅读：{{item.watch}}</p>
         </div>
       </el-row>
-      </nuxt-link>
+      </div>
+      <!-- </nuxt-link> -->
     </div>
   </div>
 </template>
@@ -36,6 +38,12 @@ export default {
       dataList: []
     };
   },
+  methods: {
+    handle(id){
+      this.$router.push("/post/detail?id="+id)
+      this.getData()
+    },
+  },
   mounted() {
     this.$axios({
       url: "/posts/recommend",
@@ -47,7 +55,7 @@ export default {
       console.log(res);
       this.recomment = res.data.data;
       this.dataList = this.recomment;
-      
+      // this.getData()
     });
   }
 };
