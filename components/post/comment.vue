@@ -8,8 +8,10 @@
         {{data.created_at | formatDate}}
       </div>
       <div class="comment-content">{{data.content}}</div>
+      <div class="pic" v-for="(item2,index) in data.pics" :key="index">
+        <img :src="`${$axios.defaults.baseURL}`+item2.url"  />
+      </div>
     </div>
-    
   </div>
 </template>
  
@@ -17,7 +19,7 @@
 import { formatDate } from "@/components/commonUtil.js";
 
 export default {
-   filters: {
+  filters: {
     formatDate(time) {
       var date = new Date(time);
       return formatDate(date, "yyyy-MM-dd h:m:s");
@@ -43,21 +45,20 @@ export default {
       console.log(time);
     }
   },
-  mounted() {
-   
-  }
+  mounted() {}
 };
 </script>
  
 <style lang="less" scoped>
 .container {
   width: 706px !important;
+  &:last-child {
+    border-bottom: none;
+  }
   .commnt-List {
     padding: 20px;
     border-bottom: 1px dashed #ccc;
-    &:last-child {
-      border-bottom: none;
-    }
+
     .comment-userInfo {
       font-size: 12px;
       color: #999999;
@@ -75,6 +76,15 @@ export default {
     .comment-content {
       margin: 10px 0px;
       text-indent: 1em;
+    }
+    .pic {
+      width: 93px;
+      height: 93px;
+      border: 1px dashed #cccccc;
+      img {
+        width: 90px;
+        height: 90px;
+      }
     }
   }
 }

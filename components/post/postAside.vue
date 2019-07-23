@@ -1,9 +1,9 @@
 <template>
   <div>
     <h3>相关攻略</h3>
-    <div class="about-gl" >
-      <el-row type="flex" justify="start" v-for="(item,index) in recomment" :key="index" class="aa">
-        <nuxt-link :to="`/post/detail?id=${item.id}`">
+    <div class="about-gl" v-for="(item,index) in recomment" :key="index">
+      <nuxt-link :to="`/post/detail?id=${item.id}`">
+        <el-row type="flex" justify="start"  class="aa">
           <div class="about-gl-img">
           <div class="tp">
             <img :src="item.images[0]" alt />
@@ -14,8 +14,8 @@
           <span>{{item.created_at | formatDate}}</span>
           <p>阅读：{{item.watch}}</p>
         </div>
-        </nuxt-link>
       </el-row>
+      </nuxt-link>
     </div>
   </div>
 </template>
@@ -68,7 +68,7 @@ h3 {
     padding: 20px 0px;
   }
   .about-gl-img {
-    margin-right: 3px;
+    margin-right: 8px;
     .tp {
       width: 100px;
       height: 80px;

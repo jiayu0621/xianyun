@@ -46,15 +46,15 @@
             <el-row type="flex" justify="space-between">
               <div class="upload-box">
                 <el-upload
-                  action="http:127.0.0.1:1337/upload"
+                  action="http://127.0.0.1:1337/upload"
                   list-type="picture-card"
-                  :on-preview="handlePictureCardPreview"
+                  :on-success="handlePictureCardPreview"
                   :on-remove="handleRemove"
-                  :http-request="upLoad"
+                  name="files"
                 >
                   <i class="el-icon-plus"></i>
                 </el-upload>
-                <el-dialog :visible.sync="dialogVisible" size="tiny">
+                <el-dialog :visible.sync="dialogVisible">
                   <img width="100%" :src="dialogImageUrl" alt />
                 </el-dialog>
               </div>
@@ -92,7 +92,7 @@ import PostAside from "@/components/post/postAside";
 import { formatDate } from "@/components/commonUtil.js";
 
 export default {
-   filters: {
+  filters: {
     formatDate(time) {
       var date = new Date(time);
       return formatDate(date, "yyyy-MM-dd h:m:s");
@@ -104,6 +104,7 @@ export default {
   },
   data() {
     return {
+      files: [],
       artical: {},
       num: 20,
       input: "",
@@ -142,7 +143,7 @@ export default {
       this.$axios({
         url: "/comments",
         method: "POST",
-        data: { content: this.input, pics: [], post: 4 },
+        data: { content: this.input, pics: this.files, post: 4 },
         headers: {
           Authorization: `Bearer ${this.$store.state.user.userInfo.token}`
         }
@@ -150,6 +151,7 @@ export default {
         console.log(res);
         this.getData();
         this.input = "";
+        // this.dialogVisible = false;
       });
     },
     //   点击收藏
@@ -165,26 +167,12 @@ export default {
       console.log(file, fileList);
     },
     // 点击已上传的文件链接时的钩子, 可以通过 file.response 拿到服务端返回数据
-    handlePictureCardPreview(file) {
+    handlePictureCardPreview(res, file) {
+      this.files = res;
+      console.log(res);
       console.log(file);
-      console.log(file.response);
-      this.dialogImageUrl = file.url;
-      this.dialogVisible = true;
     },
-    upLoad (file) {
-      console.log(file);
-      // var nikename = sessionStorage.getItem('nikename')
-      const formData = new FormData()
-      formData.append('file',file.file)
-      // formData.append('nikeName',nikename)
-      this.$axios.post(`/upload`,formData).then(res => res.data)
-      .then(data => {
-        console.log(data)
-        if(data.code === 200){
-          this.dialogImageUrl = data.data[0]
-        }
-      })
-    },
+
     // 切换条数时触发
     handleSizeChange(value) {
       this.pageSize = value;
